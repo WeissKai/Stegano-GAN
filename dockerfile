@@ -1,4 +1,4 @@
-# 使用官方 PyTorch 镜像作为基础镜像
+# 使用支持多架构的 PyTorch 镜像
 FROM pytorch/pytorch:latest
 
 # 设置工作目录
