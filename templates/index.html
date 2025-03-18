@@ -22,11 +22,12 @@
                 </label>
                 <input type="file" 
                        id="image" 
-                       @change="onFileChange" 
+                       v-on:change="onFileChange" 
                        accept="image/*"
                        class="w-full p-2 border rounded-lg">
             </div>
 
+            {% raw %}
             <div v-if="loading" class="text-center py-8">
                 <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
                 <p class="mt-4 text-gray-600">处理中...</p>
@@ -69,6 +70,7 @@
                     <p class="text-purple-600 text-xl">{{ result.accuracy }}</p>
                 </div>
             </div>
+            {% endraw %}
         </div>
     </div>
 

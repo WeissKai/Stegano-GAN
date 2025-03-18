@@ -9,6 +9,8 @@ from flask import Flask, render_template, request, jsonify
 from models.generator import Generator
 from models.decoder import Decoder
 from utils.metrics import compute_psnr, compute_ssim, compute_message_accuracy
+import matplotlib
+matplotlib.use('Agg')  # 使用非交互式后端，避免GUI问题
 import matplotlib.pyplot as plt
 
 app = Flask(__name__, template_folder='templates', static_folder='static')
@@ -32,8 +34,8 @@ def load_models():
         
         # 加载模型权重
         model_dir = 'checkpoints'
-        generator.load_state_dict(torch.load(os.path.join(model_dir, 'generator_final.pth'), map_location=device))
-        decoder.load_state_dict(torch.load(os.path.join(model_dir, 'decoder_final.pth'), map_location=device))
+        generator.load_state_dict(torch.load(os.path.join(model_dir, 'generator_test.pth'), map_location=device))
+        decoder.load_state_dict(torch.load(os.path.join(model_dir, 'decoder_test.pth'), map_location=device))
         
         # 设置为评估模式
         generator.eval()
@@ -114,8 +116,7 @@ def image_to_base64(image):
 
 @app.route('/')
 def index():
-    if not load_models():
-        return render_template('error.html', error="模型加载失败，请确保模型文件存在。")
+    load_models()  # 尝试加载模型，但不检查返回值
     return render_template('index.html')
 
 @app.route('/encode', methods=['POST'])
@@ -163,4 +164,4 @@ def encode():
         return jsonify({'error': str(e)})
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000) 
+    app.run(debug=True, host='0.0.0.0', port=5001) 
