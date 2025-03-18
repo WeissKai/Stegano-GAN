@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SteganoGAN - 图像隐写演示</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <div id="app" class="container mx-auto px-4 py-8">
+        <header class="text-center mb-12">
+            <h1 class="text-4xl font-bold text-gray-800 mb-4">SteganoGAN 图像隐写演示</h1>
+            <p class="text-gray-600">基于生成对抗网络的图像隐写技术</p>
+        </header>
+
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+            <div class="mb-6">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="image">
+                    选择图片
+                </label>
+                <input type="file" 
+                       id="image" 
+                       @change="onFileChange" 
+                       accept="image/*"
+                       class="w-full p-2 border rounded-lg">
+            </div>
+
+            <div v-if="loading" class="text-center py-8">
+                <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+                <p class="mt-4 text-gray-600">处理中...</p>
+            </div>
+
+            <div v-if="error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
+                {{ error }}
+            </div>
+
+            <div v-if="result" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="space-y-4">
+                    <h3 class="text-lg font-semibold text-gray-700">原始图像</h3>
+                    <img :src="'data:image/png;base64,' + result.original_image" 
+                         class="w-full rounded-lg shadow-md">
+                </div>
+                <div class="space-y-4">
+                    <h3 class="text-lg font-semibold text-gray-700">隐写后图像</h3>
+                    <img :src="'data:image/png;base64,' + result.hidden_image" 
+                         class="w-full rounded-lg shadow-md">
+                </div>
+            </div>
+
+            <div v-if="result" class="mt-8">
+                <h3 class="text-lg font-semibold text-gray-700 mb-4">消息可视化</h3>
+                <img :src="'data:image/png;base64,' + result.message_plot" 
+                     class="w-full rounded-lg shadow-md">
+            </div>
+
+            <div v-if="result" class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-blue-50 p-4 rounded-lg">
+                    <h4 class="font-semibold text-blue-800">PSNR</h4>
+                    <p class="text-blue-600 text-xl">{{ result.psnr }}</p>
+                </div>
+                <div class="bg-green-50 p-4 rounded-lg">
+                    <h4 class="font-semibold text-green-800">SSIM</h4>
+                    <p class="text-green-600 text-xl">{{ result.ssim }}</p>
+                </div>
+                <div class="bg-purple-50 p-4 rounded-lg">
+                    <h4 class="font-semibold text-purple-800">消息提取准确率</h4>
+                    <p class="text-purple-600 text-xl">{{ result.accuracy }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                loading: false,
+                error: null,
+                result: null
+            },
+            methods: {
+                async onFileChange(e) {
+                    const file = e.target.files[0];
+                    if (!file) return;
+
+                    this.loading = true;
+                    this.error = null;
+                    this.result = null;
+
+                    const formData = new FormData();
+                    formData.append('image', file);
+
+                    try {
+                        const response = await axios.post('/encode', formData);
+                        this.result = response.data;
+                    } catch (error) {
+                        this.error = error.response?.data?.error || '处理图片时发生错误';
+                    } finally {
+                        this.loading = false;
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html> 
