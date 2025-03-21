@@ -19,6 +19,9 @@ class Decoder(nn.Module):
             nn.ReLU(True),
             nn.Conv2d(256, 512, 4, stride=2, padding=1),
             nn.BatchNorm2d(512),
+            nn.ReLU(True),
+            nn.Conv2d(512, 1024, 4, stride=2, padding=1),  # 增加一层卷积
+            nn.BatchNorm2d(1024),
             nn.ReLU(True)
         )
         
@@ -28,6 +31,8 @@ class Decoder(nn.Module):
         # 全连接层，输出消息
         self.fc = nn.Sequential(
             nn.Flatten(),
+            nn.Linear(1024, 512),  # 增加一层全连接
+            nn.ReLU(True),
             nn.Linear(512, 256),
             nn.ReLU(True),
             nn.Linear(256, message_length),

@@ -56,7 +56,7 @@ class SteganoDataset(Dataset):
         
         return image, message
 
-def get_data_loaders():
+def get_data_loaders(batch_size=Config.BATCH_SIZE):
     """
     获取训练和测试数据加载器
     Returns:
@@ -85,7 +85,7 @@ def get_data_loaders():
     # 创建数据加载器
     train_loader = DataLoader(
         train_dataset,
-        batch_size=Config.BATCH_SIZE,
+        batch_size=batch_size,
         shuffle=True,
         num_workers=Config.NUM_WORKERS,
         pin_memory=True
@@ -93,7 +93,7 @@ def get_data_loaders():
     
     test_loader = DataLoader(
         test_dataset,
-        batch_size=Config.BATCH_SIZE,
+        batch_size=batch_size,
         shuffle=False,
         num_workers=Config.NUM_WORKERS,
         pin_memory=True

@@ -16,7 +16,10 @@ class Discriminator(nn.Module):
             nn.Conv2d(256, 512, 4, stride=2, padding=1),
             nn.BatchNorm2d(512),
             nn.LeakyReLU(0.2, inplace=True),
-            nn.Conv2d(512, 1, 4, stride=1, padding=0),
+            nn.Conv2d(512, 1024, 4, stride=2, padding=1),  # 增加一层卷积
+            nn.BatchNorm2d(1024),
+            nn.LeakyReLU(0.2, inplace=True),
+            nn.Conv2d(1024, 1, 4, stride=1, padding=0),
             nn.Sigmoid()
         )
         
