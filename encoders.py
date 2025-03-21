@@ -4,9 +4,9 @@ import torch
 from torch import nn
 
 
-class Generator(nn.Module):
+class BasicEncoder(nn.Module):
     """
-    The Generator module takes an cover image and a data tensor and combines
+    The BasicEncoder module takes an cover image and a data tensor and combines
     them into a steganographic image.
 
     Input: (N, 3, H, W), (N, D, H, W)
@@ -68,7 +68,7 @@ class Generator(nn.Module):
         return x
 
 
-class ResidualEncoder(Generator):    # 将 BasicEncoder 改为 Generator
+class ResidualEncoder(BasicEncoder):
     """
     The ResidualEncoder module takes an cover image and a data tensor and combines
     them into a steganographic image.
@@ -97,7 +97,7 @@ class ResidualEncoder(Generator):    # 将 BasicEncoder 改为 Generator
         return self.features, self.layers
 
 
-class DenseEncoder(Generator):    # 将 BasicEncoder 改为 Generator
+class DenseEncoder(BasicEncoder):
     """
     The DenseEncoder module takes an cover image and a data tensor and combines
     them into a steganographic image.

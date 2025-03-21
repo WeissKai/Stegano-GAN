@@ -24,9 +24,13 @@ def train(args):
     
     # 初始化模型
     print("\n初始化模型...")
-    generator = Generator(input_channels=3, output_channels=3).to(device)
-    discriminator = Discriminator(input_channels=3).to(device)
-    decoder = Decoder(input_channels=3, message_length=args.message_length).to(device)
+    # 修改生成器初始化，data_depth 应该与消息长度匹配
+    generator = Generator(data_depth=args.message_length, hidden_size=64).to(device)
+    
+    # 修改判别器初始化
+    discriminator = Discriminator(hidden_size=64).to(device)
+    # 修改解码器初始化
+    decoder = Decoder(data_depth=args.message_length, hidden_size=64).to(device)
     
     # 从检查点加载模型（如果存在）
     start_epoch = 0
@@ -77,7 +81,7 @@ def train(args):
             
             # ----- 训练判别器 -----
             # 生成隐藏图像
-            hidden_images = generator(images)
+            hidden_images = generator(images, messages)  # 添加 messages 参数
             
             # 判别器前向传播
             real_output = discriminator(images)
@@ -94,7 +98,7 @@ def train(args):
             
             # ----- 训练生成器和解码器 -----
             # 重新计算判别器输出（因为参数已更新）
-            hidden_images = generator(images)
+            hidden_images = generator(images, messages)  # 添加 messages 参数
             fake_output = discriminator(hidden_images)
             extracted_messages = decoder(hidden_images)
             
@@ -180,7 +184,7 @@ def train(args):
                 images, messages = images.to(device), messages.to(device)
                 
                 # 生成隐藏图像
-                hidden_images = generator(images)
+                hidden_images = generator(images, messages)  # 添加 messages 参数
                 extracted_messages = decoder(hidden_images)
                 
                 # 计算评估指标

@@ -51,8 +51,9 @@ class SteganoDataset(Dataset):
         if self.transform:
             image = self.transform(image)
             
-        # 生成随机消息
-        message = torch.randint(0, 2, (Config.MESSAGE_LENGTH,), dtype=torch.float32)
+        # 生成随机消息，维度与图像相匹配
+        message = torch.randint(0, 2, (Config.MESSAGE_LENGTH, 1, 1), dtype=torch.float32)
+        message = message.expand(-1, image.size(1), image.size(2))  # 扩展到与图像相同的空间维度
         
         return image, message
 
@@ -120,4 +121,4 @@ trainloader = torch.utils.data.DataLoader(trainset, batch_size=4,
 testset = torchvision.datasets.CIFAR10(root='./data', train=False,
                                        download=True, transform=transform)
 testloader = torch.utils.data.DataLoader(testset, batch_size=4,
-                                         shuffle=False, num_workers=2) 
+                                         shuffle=False, num_workers=2)

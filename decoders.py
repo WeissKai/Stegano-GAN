@@ -4,9 +4,9 @@ import torch
 from torch import nn
 
 
-class Decoder(nn.Module):    # 将 BasicDecoder 改为 Decoder
+class BasicDecoder(nn.Module):
     """
-    The Decoder module takes an steganographic image and attempts to decode
+    The BasicDecoder module takes an steganographic image and attempts to decode
     the embedded data tensor.
 
     Input: (N, 3, H, W)
@@ -68,7 +68,7 @@ class Decoder(nn.Module):    # 将 BasicDecoder 改为 Decoder
         return x
 
 
-class DenseDecoder(Decoder):    # 将 BasicDecoder 改为 Decoder
+class DenseDecoder(BasicDecoder):
     """
     The DenseDecoder module takes an steganographic image and attempts to decode
     the embedded data tensor.

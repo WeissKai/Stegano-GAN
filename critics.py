@@ -4,9 +4,9 @@ import torch
 from torch import nn
 
 
-class Discriminator(nn.Module):
+class BasicCritic(nn.Module):
     """
-    The Discriminator module takes an image and predicts whether it is a cover
+    The BasicCritic module takes an image and predicts whether it is a cover
     image or a steganographic image (N, 1).
 
     Input: (N, 3, H, W)
@@ -53,5 +53,5 @@ class Discriminator(nn.Module):
     def forward(self, x):
         x = self._models(x)
         x = torch.mean(x.view(x.size(0), -1), dim=1)
-        x = x.unsqueeze(1)
-        return torch.sigmoid(x)  # 添加 sigmoid 激活，确保输出在 [0,1] 范围内
+
+        return x
